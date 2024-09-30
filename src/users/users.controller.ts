@@ -6,14 +6,13 @@ import {
   Param,
   Delete,
   UseGuards,
-  BadRequestException,
   ParseIntPipe,
   UnauthorizedException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { LoginUserDto } from './dto/login-user.dto';
+import { CreateUserDto } from './dtos/create-user.dto';
+import { UpdateUserDto } from './dtos/update-user.dto';
+import { LoginUserDto } from './dtos/login-user.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from 'src/_common/auth/auth.guard';
 import { AuthId } from 'src/_common/auth/decorator/id.decorator';

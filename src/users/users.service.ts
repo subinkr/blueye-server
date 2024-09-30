@@ -4,12 +4,12 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserDto } from './dtos/create-user.dto';
+import { UpdateUserDto } from './dtos/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../_core/entities/user.entity';
+import { User } from 'src/_core/entities/user.entity';
 import { Repository } from 'typeorm';
-import { LoginUserDto } from './dto/login-user.dto';
+import { LoginUserDto } from './dtos/login-user.dto';
 import { AuthService } from 'src/_common/auth/auth.service';
 
 @Injectable()
