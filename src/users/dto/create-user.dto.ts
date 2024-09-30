@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { MockUser } from 'src/source-code/mock/entities/user.entity.mock';
+import { MockUser } from '../../_mock/entities/user.entity';
 
 export class CreateUserDto {
   @ApiProperty({ example: MockUser.createUser.id })

@@ -1,7 +1,7 @@
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
-import { LoginUserDto } from 'src/users/dto/login-user.dto';
-import { UpdateUserDto } from 'src/users/dto/update-user.dto';
-import { User } from 'src/users/entities/user.entity';
+import { User } from '../../_core/entities/user.entity';
+import { CreateUserDto } from '../../users/dto/create-user.dto';
+import { UpdateUserDto } from '../../users/dto/update-user.dto';
+import { LoginUserDto } from '../../users/dto/login-user.dto';
 
 export const defaultUser: User = {
   id: 1,

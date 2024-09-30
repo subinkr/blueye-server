@@ -5,8 +5,8 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { HousesModule } from './houses/houses.module';
 import { UsersModule } from './users/users.module';
-import { User } from './users/entities/user.entity';
-import { AuthModule } from './auth/auth.module';
+import { CommonModule } from './_common/_common.module';
+import { User } from './_core/entities/user.entity';
 
 @Module({
   imports: [
@@ -27,9 +27,9 @@ import { AuthModule } from './auth/auth.module';
         rejectUnauthorized: false,
       },
     }),
+    CommonModule,
     HousesModule,
     UsersModule,
-    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

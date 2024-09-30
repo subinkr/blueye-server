@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
-import { MockUser } from 'src/source-code/mock/entities/user.entity.mock';
+import { MockUser } from 'src/_mock/entities/user.entity';
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity()
