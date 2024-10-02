@@ -6,6 +6,8 @@ import { UsersModule } from './users/users.module';
 import { CommonModule } from './_common/_common.module';
 import { User } from './_core/entities/user.entity';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { House } from './_core/entities/house.entity';
 
 @Module({
   imports: [
@@ -20,7 +22,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [User],
+      entities: [User, House],
       synchronize: true,
       ssl: process.env.DB_AWS_HOSTNAME && {
         rejectUnauthorized: false,
@@ -29,6 +31,10 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
     CommonModule,
     HousesModule,
     UsersModule,
+    ServeStaticModule.forRoot({
+      rootPath: `${process.cwd()}/public`,
+      serveRoot: '/public',
+    }),
   ],
   providers: [
     { provide: APP_INTERCEPTOR, useClass: ClassSerializerInterceptor },

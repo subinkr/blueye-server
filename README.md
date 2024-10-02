@@ -1,5 +1,10 @@
 # Dependencies
 
 ```
-pnpm i @nestjs/config @nestjs/swagger express-basic-auth @nestjs/typeorm typeorm pg @nestjs/jwt bcrypt class-transformer
+pnpm i @nestjs/config
+pnpm i @nestjs/swagger express-basic-auth
+pnpm i @nestjs/typeorm typeorm pg
+pnpm i @nestjs/jwt bcrypt
+pnpm i class-transformer
+pnpm i @nestjs/serve-static @types/multer multer uuid
 ```
