@@ -4,13 +4,17 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateUserDto } from './dtos/create-user.dto';
-import { UpdateUserDto } from './dtos/update-user.dto';
+import { ReqCreateUserDto } from './dtos/req.create-user.dto';
+import { ReqUpdateUserDto } from './dtos/req.update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/_core/entities/user.entity';
 import { Repository } from 'typeorm';
-import { LoginUserDto } from './dtos/login-user.dto';
+import { ReqLoginUserDto } from './dtos/req.login-user.dto';
 import { AuthService } from 'src/_common/auth/auth.service';
+import { ResCreateUserDto } from './dtos/res.create-user.dto';
+import { ResLoginUserDto } from './dtos/res.login-user.dto';
+import { ResUpdateUserDto } from './dtos/res.update-user.dto';
+import { ResRemoveUserDto } from './dtos/res.remove-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -20,7 +24,7 @@ export class UsersService {
     private readonly authService: AuthService,
   ) {}
 
-  async findOne(id: number) {
+  async findOne(id: number): Promise<User> {
     const user = await this.userRepo.findOne({
       where: { id },
     });
@@ -29,22 +33,24 @@ export class UsersService {
     return user;
   }
 
-  async create(
-    createUserDto: CreateUserDto,
-  ): Promise<{ id: number; accessToken: string }> {
-    const { id, password, repeatPassword } = createUserDto;
-    const userExist = await this.userRepo.exists({
+  async create(reqCreateUserDto: ReqCreateUserDto): Promise<ResCreateUserDto> {
+    const { id, username, password, repeatPassword } = reqCreateUserDto;
+    const userIdExist = await this.userRepo.exists({
       where: { id },
     });
+    const usernameExist = await this.userRepo.exists({
+      where: { username },
+    });
 
-    if (userExist) throw new ConflictException('이미 존재하는 유저입니다.');
+    if (userIdExist || usernameExist)
+      throw new ConflictException('이미 존재하는 유저입니다.');
     if (password !== repeatPassword)
       throw new BadRequestException('두 비밀번호가 다릅니다.');
 
     const hashedPassword = await this.authService.hashPassword(password);
 
     await this.userRepo.save({
-      ...createUserDto,
+      ...reqCreateUserDto,
       password: hashedPassword,
     });
 
@@ -53,8 +59,8 @@ export class UsersService {
     return { id, accessToken };
   }
 
-  async login(loginUserDto: LoginUserDto) {
-    const { username, password } = loginUserDto;
+  async login(reqLoginUserDto: ReqLoginUserDto): Promise<ResLoginUserDto> {
+    const { username, password } = reqLoginUserDto;
     const user = await this.userRepo.findOne({ where: { username } });
     if (!user) throw new NotFoundException('유저를 찾을 수 없습니다.');
 
@@ -68,9 +74,9 @@ export class UsersService {
 
   async update(
     id: number,
-    updateUserDto: UpdateUserDto,
-  ): Promise<{ message: string }> {
-    const { newUsername, newPassword, repeatPassword } = updateUserDto;
+    reqUpdateUserDto: ReqUpdateUserDto,
+  ): Promise<ResUpdateUserDto> {
+    const { newUsername, newPassword, repeatPassword } = reqUpdateUserDto;
     const user = await this.findOne(id);
 
     if (newUsername) {
@@ -95,9 +101,9 @@ export class UsersService {
     return { message: '비밀번호가 수정되었습니다.' };
   }
 
-  async remove(id: number): Promise<{ message: string }> {
+  async remove(id: number): Promise<ResRemoveUserDto> {
     await this.findOne(id);
-    await this.userRepo.delete(id);
+    await this.userRepo.softDelete(id);
     return { message: '계정이 삭제되었습니다.' };
   }
 }

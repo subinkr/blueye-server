@@ -19,7 +19,8 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Blueye homepage')
     .setDescription('Blueye homepage')
-    .setVersion('1.0.0')
+    .setVersion('1.0.1')
+    .addTag('houses')
     .addTag('users')
     .addBearerAuth()
     .build();

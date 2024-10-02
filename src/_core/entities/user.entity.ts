@@ -5,15 +5,15 @@ import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity()
 export class User {
-  @ApiProperty({ example: MockUser.user.id })
+  @ApiProperty({ example: MockUser.defaultUser.id })
   @PrimaryColumn()
   id: number;
 
-  @ApiProperty({ example: MockUser.user.username })
+  @ApiProperty({ example: MockUser.defaultUser.username })
   @Column()
   username: string;
 
-  @ApiProperty({ example: MockUser.user.password })
+  @ApiProperty({ example: MockUser.defaultUser.password })
   @Column()
   @Exclude({ toPlainOnly: true })
   password: string;
