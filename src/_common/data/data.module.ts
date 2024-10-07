@@ -5,6 +5,8 @@ import { MulterModule } from '@nestjs/platform-express';
 import { extname } from 'path';
 import * as multer from 'multer';
 import { v4 as uuid } from 'uuid';
+import { AuthService } from '../auth/auth.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -36,6 +38,6 @@ import { v4 as uuid } from 'uuid';
     }),
   ],
   controllers: [DataController],
-  providers: [DataService],
+  providers: [DataService, AuthService, JwtService],
 })
 export class DataModule {}

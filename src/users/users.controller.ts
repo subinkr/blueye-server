@@ -46,9 +46,9 @@ export class UsersController {
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() reqUpdateUserDto: ReqUpdateUserDto,
-    @AuthId() loginUserID: number,
+    @AuthId() loginUserId: number,
   ): Promise<ResUpdateUserDto> {
-    if (id !== loginUserID) throw new UnauthorizedException('권한이 없습니다.');
+    if (id !== loginUserId) throw new UnauthorizedException('권한이 없습니다.');
     return this.usersService.update(+id, reqUpdateUserDto);
   }
 
@@ -57,9 +57,9 @@ export class UsersController {
   @Delete(':id')
   async remove(
     @Param('id', ParseIntPipe) id: number,
-    @AuthId() loginUserID: number,
+    @AuthId() loginUserId: number,
   ): Promise<ResRemoveUserDto> {
-    if (id !== loginUserID) throw new UnauthorizedException('권한이 없습니다.');
+    if (id !== loginUserId) throw new UnauthorizedException('권한이 없습니다.');
     return this.usersService.remove(+id);
   }
 }

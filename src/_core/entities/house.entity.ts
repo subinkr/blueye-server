@@ -4,75 +4,75 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class House {
-  @ApiProperty({ example: MockHouse.house.id })
+  @ApiProperty({ example: MockHouse.defaultHouse.id })
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ApiProperty({ example: MockHouse.house.city })
+  @ApiProperty({ example: MockHouse.defaultHouse.city })
   @Column()
   city: string;
 
-  @ApiProperty({ example: MockHouse.house.title })
+  @ApiProperty({ example: MockHouse.defaultHouse.title })
   @Column()
   title: string;
-  @ApiProperty({ example: MockHouse.house.writer })
+  @ApiProperty({ example: MockHouse.defaultHouse.writer })
   @Column()
   writer: number;
-  @ApiProperty({ example: MockHouse.house.descriptions })
+  @ApiProperty({ example: MockHouse.defaultHouse.descriptions })
   @Column()
   descriptions: string; // JSON.parse()
 
-  @ApiProperty({ example: MockHouse.house.builder })
+  @ApiProperty({ example: MockHouse.defaultHouse.builder })
   @Column()
   builder: string; // @html marked()
-  @ApiProperty({ example: MockHouse.house.builderDetail })
+  @ApiProperty({ example: MockHouse.defaultHouse.builderDetail })
   @Column()
   builderDetail: string;
 
-  @ApiProperty({ example: MockHouse.house.price })
+  @ApiProperty({ example: MockHouse.defaultHouse.price })
   @Column()
   price: string;
 
-  @ApiProperty({ example: MockHouse.house.location })
+  @ApiProperty({ example: MockHouse.defaultHouse.location })
   @Column()
   location: string;
-  @ApiProperty({ example: MockHouse.house.googleMap })
+  @ApiProperty({ example: MockHouse.defaultHouse.googleMap })
   @Column()
   googleMap: string; // @html marked()
 
-  @ApiProperty({ example: MockHouse.house.pricePerSquareMeter })
+  @ApiProperty({ example: MockHouse.defaultHouse.pricePerSquareMeter })
   @Column()
   pricePerSquareMeter: string; // @html marked()
-  @ApiProperty({ example: MockHouse.house.salesType })
+  @ApiProperty({ example: MockHouse.defaultHouse.salesType })
   @Column()
   salesType: string; // @html marked()
-  @ApiProperty({ example: MockHouse.house.squareMeter })
+  @ApiProperty({ example: MockHouse.defaultHouse.squareMeter })
   @Column()
   squareMeter: string; // @html marked()
 
-  @ApiProperty({ example: MockHouse.house.config })
+  @ApiProperty({ example: MockHouse.defaultHouse.config })
   @Column()
   config: string; // @html marked()
 
-  @ApiProperty({ example: MockHouse.house.date })
+  @ApiProperty({ example: MockHouse.defaultHouse.date })
   @Column()
   date: string; // @html marked()
 
-  @ApiProperty({ example: MockHouse.house.houseHolders })
+  @ApiProperty({ example: MockHouse.defaultHouse.houseHolders })
   @Column()
   houseHolders: string; // @html marked()
-  @ApiProperty({ example: MockHouse.house.own })
+  @ApiProperty({ example: MockHouse.defaultHouse.own })
   @Column()
   own: string; // @html marked()
 
-  @ApiProperty({ example: MockHouse.house.expectedReturn })
+  @ApiProperty({ example: MockHouse.defaultHouse.expectedReturn })
   @Column()
   expectedReturn: string; // @html marked()
-  @ApiProperty({ example: MockHouse.house.tax })
+  @ApiProperty({ example: MockHouse.defaultHouse.tax })
   @Column()
   tax: string; // @html marked()
 
-  @ApiProperty({ example: MockHouse.house.images })
+  @ApiProperty({ example: MockHouse.defaultHouse.images })
   @Column()
   images: string; // split('\n')
 }

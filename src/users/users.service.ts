@@ -103,7 +103,7 @@ export class UsersService {
 
   async remove(id: number): Promise<ResRemoveUserDto> {
     await this.findOne(id);
-    await this.userRepo.softDelete(id);
+    await this.userRepo.delete(id);
     return { message: '계정이 삭제되었습니다.' };
   }
 }

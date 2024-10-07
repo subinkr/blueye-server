@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class DataService {
-  async uploadImages(files: Express.Multer.File[]) {
-    const images = files.map((file) => file.filename).join('\n');
-    return images;
+  async uploadImage(file: Express.Multer.File) {
+    const image = file.filename;
+    return { image };
   }
 }

@@ -27,7 +27,7 @@ describe('UsersService', () => {
     authService = module.get<AuthService>(AuthService);
   });
 
-  describe('FindOne', () => {
+  describe('Find one', () => {
     it('RUN | findOne', async () => {
       await service.findOne(defaultUser.id);
     });

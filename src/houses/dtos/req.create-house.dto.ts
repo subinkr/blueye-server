@@ -1,56 +1,51 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { MockHouse } from 'src/_mock/entities/house.entity';
+import { mockReqCreateHouse } from 'src/_mock/dtos/houses/req.create-house.dto';
 
 export class ReqCreateHouseDto {
-  @ApiProperty({ example: MockHouse.house.id })
-  id: number;
-
-  @ApiProperty({ example: MockHouse.house.city })
+  @ApiProperty({ example: mockReqCreateHouse.city })
   city: string;
 
-  @ApiProperty({ example: MockHouse.house.title })
+  @ApiProperty({ example: mockReqCreateHouse.title })
   title: string;
-  @ApiProperty({ example: MockHouse.house.writer })
-  writer: number;
-  @ApiProperty({ example: MockHouse.house.descriptions })
+  @ApiProperty({ example: mockReqCreateHouse.descriptions })
   descriptions: string; // JSON.parse()
 
-  @ApiProperty({ example: MockHouse.house.builder })
+  @ApiProperty({ example: mockReqCreateHouse.builder })
   builder: string; // @html marked()
-  @ApiProperty({ example: MockHouse.house.builderDetail })
+  @ApiProperty({ example: mockReqCreateHouse.builderDetail })
   builderDetail: string;
 
-  @ApiProperty({ example: MockHouse.house.price })
+  @ApiProperty({ example: mockReqCreateHouse.price })
   price: string;
 
-  @ApiProperty({ example: MockHouse.house.location })
+  @ApiProperty({ example: mockReqCreateHouse.location })
   location: string;
-  @ApiProperty({ example: MockHouse.house.googleMap })
+  @ApiProperty({ example: mockReqCreateHouse.googleMap })
   googleMap: string; // @html marked()
 
-  @ApiProperty({ example: MockHouse.house.pricePerSquareMeter })
+  @ApiProperty({ example: mockReqCreateHouse.pricePerSquareMeter })
   pricePerSquareMeter: string; // @html marked()
-  @ApiProperty({ example: MockHouse.house.salesType })
+  @ApiProperty({ example: mockReqCreateHouse.salesType })
   salesType: string; // @html marked()
-  @ApiProperty({ example: MockHouse.house.squareMeter })
+  @ApiProperty({ example: mockReqCreateHouse.squareMeter })
   squareMeter: string; // @html marked()
 
-  @ApiProperty({ example: MockHouse.house.config })
+  @ApiProperty({ example: mockReqCreateHouse.config })
   config: string; // @html marked()
 
-  @ApiProperty({ example: MockHouse.house.date })
+  @ApiProperty({ example: mockReqCreateHouse.date })
   date: string; // @html marked()
 
-  @ApiProperty({ example: MockHouse.house.houseHolders })
+  @ApiProperty({ example: mockReqCreateHouse.houseHolders })
   houseHolders: string; // @html marked()
-  @ApiProperty({ example: MockHouse.house.own })
+  @ApiProperty({ example: mockReqCreateHouse.own })
   own: string; // @html marked()
 
-  @ApiProperty({ example: MockHouse.house.expectedReturn })
+  @ApiProperty({ example: mockReqCreateHouse.expectedReturn })
   expectedReturn: string; // @html marked()
-  @ApiProperty({ example: MockHouse.house.tax })
+  @ApiProperty({ example: mockReqCreateHouse.tax })
   tax: string; // @html marked()
 
-  @ApiProperty({ example: MockHouse.house.images })
+  @ApiProperty({ example: mockReqCreateHouse.images })
   images: string; // split('\n')
 }

@@ -52,7 +52,7 @@ export class MockUser {
 
   update() {}
 
-  softDelete() {
+  delete() {
     return true;
   }
 }
