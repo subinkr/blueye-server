@@ -73,13 +73,20 @@ export class UsersService {
   }
 
   async update(
-    id: number,
+    loginUserId: number,
     reqUpdateUserDto: ReqUpdateUserDto,
   ): Promise<ResUpdateUserDto> {
     const { newUsername, newPassword, repeatPassword } = reqUpdateUserDto;
-    const user = await this.findOne(id);
+    const user = await this.findOne(loginUserId);
 
     if (newUsername) {
+      const usernameExist = await this.userRepo.exists({
+        where: { username: newUsername },
+      });
+      if (usernameExist) {
+        throw new ConflictException('이미 존재하는 유저입니다.');
+      }
+
       await this.userRepo.save({
         ...user,
         username: newUsername,

@@ -36,7 +36,7 @@ export class HousesService {
     const resHouses = houses.map((house) => {
       return {
         id: house.id,
-        image: house.images.split('\n')[0],
+        image: house.images.split('|')[0],
         title: house.title,
         date: house.date,
         price: house.price,

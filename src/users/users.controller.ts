@@ -8,6 +8,7 @@ import {
   UseGuards,
   ParseIntPipe,
   UnauthorizedException,
+  Put,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { ReqCreateUserDto } from './dtos/req.create-user.dto';
@@ -42,14 +43,12 @@ export class UsersController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
-  @Patch(':id')
+  @Put()
   async update(
-    @Param('id', ParseIntPipe) id: number,
     @Body() reqUpdateUserDto: ReqUpdateUserDto,
     @AuthId() loginUserId: number,
   ): Promise<ResUpdateUserDto> {
-    if (id !== loginUserId) throw new UnauthorizedException('권한이 없습니다.');
-    return this.usersService.update(+id, reqUpdateUserDto);
+    return this.usersService.update(loginUserId, reqUpdateUserDto);
   }
 
   @ApiBearerAuth()
