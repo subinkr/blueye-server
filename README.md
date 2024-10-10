@@ -7,6 +7,7 @@ pnpm i @nestjs/typeorm typeorm pg
 pnpm i @nestjs/jwt bcrypt
 pnpm i class-transformer class-validator
 pnpm i @nestjs/serve-static @types/multer multer uuid
+pnpm i aws-sdk
 ```
 
 # Build 간 메모리 부족 시

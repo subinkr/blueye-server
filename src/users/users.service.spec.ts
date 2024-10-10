@@ -4,6 +4,7 @@ import { providers } from 'src/_mock/providers';
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   NotFoundException,
 } from '@nestjs/common';
 import { mockReqCreateUser } from 'src/_mock/dtos/users/req.create-user.dto';
@@ -40,30 +41,51 @@ describe('UsersService', () => {
 
   describe('Create', () => {
     it('RUN | create', async () => {
-      await service.create(mockReqCreateUser);
+      await service.create(mockReqCreateUser, defaultUser.id);
+    });
+
+    it('ERR | wrong repeat password', async () => {
+      const result = service.create(
+        {
+          ...mockReqCreateUser,
+          password: 'p@ssw0rd',
+          repeatPassword: 'password',
+        },
+        notExistUser.id,
+      );
+      await expect(result).rejects.toThrow(ForbiddenException);
     });
 
     it('ERR | id or username already exist', async () => {
-      const existUserIdResult = service.create({
-        ...mockReqCreateUser,
-        id: 0,
-      });
+      const existUserIdResult = service.create(
+        {
+          ...mockReqCreateUser,
+          id: 0,
+        },
+        defaultUser.id,
+      );
       await expect(existUserIdResult).rejects.toThrow(ConflictException);
 
-      const existUsernameResult = service.create({
-        ...mockReqCreateUser,
-        id: null,
-        username: 'username',
-      });
+      const existUsernameResult = service.create(
+        {
+          ...mockReqCreateUser,
+          id: null,
+          username: 'username',
+        },
+        defaultUser.id,
+      );
       await expect(existUsernameResult).rejects.toThrow(ConflictException);
     });
 
     it('ERR | wrong repeat password', async () => {
-      const result = service.create({
-        ...mockReqCreateUser,
-        password: 'p@ssw0rd',
-        repeatPassword: 'password',
-      });
+      const result = service.create(
+        {
+          ...mockReqCreateUser,
+          password: 'p@ssw0rd',
+          repeatPassword: 'password',
+        },
+        defaultUser.id,
+      );
       await expect(result).rejects.toThrow(BadRequestException);
     });
   });

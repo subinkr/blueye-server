@@ -27,11 +27,14 @@ import { ResRemoveUserDto } from './dtos/res.remove-user.dto';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Post('register')
   async create(
     @Body() reqCreateUserDto: ReqCreateUserDto,
+    @AuthId() loginUserId: number,
   ): Promise<ResCreateUserDto> {
-    return this.usersService.create(reqCreateUserDto);
+    return this.usersService.create(reqCreateUserDto, loginUserId);
   }
 
   @Post('login')
@@ -53,12 +56,8 @@ export class UsersController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
-  @Delete(':id')
-  async remove(
-    @Param('id', ParseIntPipe) id: number,
-    @AuthId() loginUserId: number,
-  ): Promise<ResRemoveUserDto> {
-    if (id !== loginUserId) throw new UnauthorizedException('권한이 없습니다.');
-    return this.usersService.remove(+id);
+  @Delete()
+  async remove(@AuthId() loginUserId: number): Promise<ResRemoveUserDto> {
+    return this.usersService.remove(loginUserId);
   }
 }

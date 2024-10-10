@@ -9,7 +9,6 @@ import { mockReqLoginUser } from 'src/_mock/dtos/users/req.login-user.dto';
 import { mockReqUpdateUser } from 'src/_mock/dtos/users/req.update-user.dto';
 import { mockResUpdateUser } from 'src/_mock/dtos/users/res.update-user.dto';
 import { mockResRemoveUser } from 'src/_mock/dtos/users/res.remove-user.dto';
-import { UnauthorizedException } from '@nestjs/common';
 import { MockUser } from 'src/_mock/entities/user.entity';
 
 describe('UsersController', () => {
@@ -30,7 +29,7 @@ describe('UsersController', () => {
   describe('Post users register', () => {
     it('USE | service create', async () => {
       service.create = jest.fn().mockReturnValue(mockResCreateUser);
-      await controller.create(mockReqCreateUser);
+      await controller.create(mockReqCreateUser, defaultUser.id);
       expect(service.create).toHaveBeenCalled();
     });
   });
@@ -46,34 +45,16 @@ describe('UsersController', () => {
   describe('Patch users :id', () => {
     it('USE | service update', async () => {
       service.update = jest.fn().mockReturnValue(mockResUpdateUser);
-      await controller.update(
-        defaultUser.id,
-        mockReqUpdateUser,
-        defaultUser.id,
-      );
+      await controller.update(mockReqUpdateUser, defaultUser.id);
       expect(service.update).toHaveBeenCalled();
-    });
-
-    it('ERR | not match user id', async () => {
-      const result = controller.update(
-        defaultUser.id,
-        mockReqUpdateUser,
-        notExistUser.id,
-      );
-      await expect(result).rejects.toThrow(UnauthorizedException);
     });
   });
 
   describe('Delete users :id', () => {
     it('USE | service remove', async () => {
       service.remove = jest.fn().mockReturnValue(mockResRemoveUser);
-      await controller.remove(defaultUser.id, defaultUser.id);
+      await controller.remove(defaultUser.id);
       expect(service.remove).toHaveBeenCalled();
-    });
-
-    it('ERR | not match user id', async () => {
-      const result = controller.remove(defaultUser.id, notExistUser.id);
-      await expect(result).rejects.toThrow(UnauthorizedException);
     });
   });
 });

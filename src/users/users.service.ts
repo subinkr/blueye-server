@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -33,7 +34,14 @@ export class UsersService {
     return user;
   }
 
-  async create(reqCreateUserDto: ReqCreateUserDto): Promise<ResCreateUserDto> {
+  async create(
+    reqCreateUserDto: ReqCreateUserDto,
+    loginUserId: number,
+  ): Promise<ResCreateUserDto> {
+    if (loginUserId !== 0) {
+      throw new ForbiddenException('권한이 없습니다.');
+    }
+
     const { id, username, password, repeatPassword } = reqCreateUserDto;
     const userIdExist = await this.userRepo.exists({
       where: { id },
@@ -108,9 +116,9 @@ export class UsersService {
     return { message: '비밀번호가 수정되었습니다.' };
   }
 
-  async remove(id: number): Promise<ResRemoveUserDto> {
-    await this.findOne(id);
-    await this.userRepo.delete(id);
+  async remove(loginUserId: number): Promise<ResRemoveUserDto> {
+    await this.findOne(loginUserId);
+    await this.userRepo.delete(loginUserId);
     return { message: '계정이 삭제되었습니다.' };
   }
 }

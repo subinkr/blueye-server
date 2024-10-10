@@ -6,7 +6,9 @@ import * as expressBasicAuth from 'express-basic-auth';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: {
-      origin: ['https://blueye.asia'],
+      origin: process.env.DB_AWS_HOSTNAME
+        ? ['https://blueye.asia']
+        : ['http://localhost:5173'],
     },
   });
   app.use(
