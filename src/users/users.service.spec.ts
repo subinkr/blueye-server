@@ -13,11 +13,14 @@ import { AuthService } from 'src/_common/auth/auth.service';
 import { ReqUpdateUserDto } from './dtos/req.update-user.dto';
 import { mockResUpdateUser } from 'src/_mock/dtos/users/res.update-user.dto';
 import { MockUser } from 'src/_mock/entities/user.entity';
+import { mockReqDeleteUser } from 'src/_mock/dtos/users/req.delete-user.dto';
+import { mockResLoginUser } from 'src/_mock/dtos/users/res.login-user.dto';
+import { mockResCreateUser } from 'src/_mock/dtos/users/res.create-user.dto';
 
 describe('UsersService', () => {
   let service: UsersService;
   let authService: AuthService;
-  const { defaultUser, notExistUser } = MockUser;
+  const { defaultUser, otherUser, notExistUser } = MockUser;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -30,7 +33,10 @@ describe('UsersService', () => {
 
   describe('Find one', () => {
     it('RUN | findOne', async () => {
-      await service.findOne(defaultUser.id);
+      const result = await service.findOne(defaultUser.id);
+      const keys = Object.keys(result);
+      const required = Object.keys(defaultUser);
+      expect(keys).toEqual(expect.arrayContaining(required));
     });
 
     it('ERR | cannot find user', async () => {
@@ -41,7 +47,10 @@ describe('UsersService', () => {
 
   describe('Create', () => {
     it('RUN | create', async () => {
-      await service.create(mockReqCreateUser, defaultUser.id);
+      const result = await service.create(mockReqCreateUser, defaultUser.id);
+      const keys = Object.keys(result);
+      const required = Object.keys(mockResCreateUser);
+      expect(keys).toEqual(expect.arrayContaining(required));
     });
 
     it('ERR | wrong repeat password', async () => {
@@ -92,7 +101,10 @@ describe('UsersService', () => {
 
   describe('Login', () => {
     it('RUN | login', async () => {
-      await service.login(mockReqLoginUser);
+      const result = await service.login(mockReqLoginUser);
+      const keys = Object.keys(result);
+      const required = Object.keys(mockResLoginUser);
+      expect(keys).toEqual(expect.arrayContaining(required));
     });
 
     it('ERR | cannot find username', async () => {
@@ -111,18 +123,36 @@ describe('UsersService', () => {
         newPassword: null,
         repeatPassword: null,
       };
-      await service.update(defaultUser.id, mockReqUpdateUsername);
+      const result = await service.update(
+        defaultUser.id,
+        mockReqUpdateUsername,
+      );
+      const keys = Object.keys(result);
+      const required = Object.keys(mockResUpdateUser);
+      expect(keys).toEqual(expect.arrayContaining(required));
     });
 
-    it('RUN | update password', async () => {
+    it('USE | hashPassword', async () => {
       const mockReqUpdatePassword: ReqUpdateUserDto = {
         newUsername: null,
         newPassword: 'newP@ssw0rd',
         repeatPassword: 'newP@ssw0rd',
       };
-      authService.hashPassword = jest.fn().mockReturnValue(mockResUpdateUser);
+      authService.hashPassword = jest
+        .fn()
+        .mockReturnValue(defaultUser.password);
       await service.update(defaultUser.id, mockReqUpdatePassword);
       expect(authService.hashPassword).toHaveBeenCalled();
+    });
+
+    it('ERR | already exist username', async () => {
+      const mockReqUpdateExistUsername: ReqUpdateUserDto = {
+        newUsername: 'username',
+        newPassword: null,
+        repeatPassword: null,
+      };
+      const result = service.update(defaultUser.id, mockReqUpdateExistUsername);
+      await expect(result).rejects.toThrow(ConflictException);
     });
 
     it('ERR | wrong repeat password', async () => {
@@ -137,9 +167,15 @@ describe('UsersService', () => {
   });
 
   describe('Remove', () => {
-    it('RUN | remove', async () => {
+    it('USE | findOne', async () => {
       service.findOne = jest.fn();
-      await service.remove(defaultUser.id);
+      await service.remove({ id: null }, otherUser.id);
+      expect(service.findOne).toHaveBeenCalled();
+    });
+
+    it('RUN | delete other user', async () => {
+      service.findOne = jest.fn();
+      await service.remove(mockReqDeleteUser, defaultUser.id);
       expect(service.findOne).toHaveBeenCalled();
     });
   });

@@ -6,6 +6,10 @@ import { House } from 'src/_core/entities/house.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ReqFindAllHouseDto } from './dtos/req.find-all-house.dto';
 import { BadRequestException } from '@nestjs/common';
+import { ResCreateHouseDto } from './dtos/res.create-house.dto';
+import { ResFindAllHouseDto } from './dtos/res.find-all-house.dto';
+import { ResUpdateHouseDto } from './dtos/res.update-house.dto';
+import { ResRemoveHouseDto } from './dtos/res.remove-house.dto';
 
 @Injectable()
 export class HousesService {
@@ -14,7 +18,10 @@ export class HousesService {
     private readonly houseRepo: Repository<House>,
   ) {}
 
-  async create(reqCreateHouseDto: ReqCreateHouseDto, loginUserId: number) {
+  async create(
+    reqCreateHouseDto: ReqCreateHouseDto,
+    loginUserId: number,
+  ): Promise<ResCreateHouseDto> {
     try {
       const house = await this.houseRepo.save({
         ...reqCreateHouseDto,
@@ -27,7 +34,9 @@ export class HousesService {
     }
   }
 
-  async findAll(reqFindAllHouseDto: ReqFindAllHouseDto) {
+  async findAll(
+    reqFindAllHouseDto: ReqFindAllHouseDto,
+  ): Promise<ResFindAllHouseDto[]> {
     const { city } = reqFindAllHouseDto;
     const houses = await this.houseRepo.find({
       where: { city },
@@ -46,7 +55,7 @@ export class HousesService {
     return resHouses;
   }
 
-  async findOne(id: number) {
+  async findOne(id: number): Promise<House> {
     const house = await this.houseRepo.findOne({
       where: { id },
     });
@@ -58,11 +67,11 @@ export class HousesService {
     id: number,
     reqUpdateHouseDto: ReqUpdateHouseDto,
     loginUserId: number,
-  ) {
+  ): Promise<ResUpdateHouseDto> {
     const house = await this.houseRepo.findOne({
       where: { id },
     });
-    if (house.writer !== loginUserId) {
+    if (house.writer !== loginUserId && loginUserId !== 0) {
       throw new UnauthorizedException('권한이 없습니다.');
     }
 
@@ -71,11 +80,11 @@ export class HousesService {
     return { message: '수정되었습니다.' };
   }
 
-  async remove(id: number, loginUserId: number) {
+  async remove(id: number, loginUserId: number): Promise<ResRemoveHouseDto> {
     const house = await this.houseRepo.findOne({
       where: { id },
     });
-    if (house.writer !== loginUserId) {
+    if (house.writer !== loginUserId && loginUserId !== 0) {
       throw new UnauthorizedException('권한이 없습니다.');
     }
 

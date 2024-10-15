@@ -10,11 +10,12 @@ import { mockReqUpdateUser } from 'src/_mock/dtos/users/req.update-user.dto';
 import { mockResUpdateUser } from 'src/_mock/dtos/users/res.update-user.dto';
 import { mockResRemoveUser } from 'src/_mock/dtos/users/res.remove-user.dto';
 import { MockUser } from 'src/_mock/entities/user.entity';
+import { mockReqDeleteUser } from 'src/_mock/dtos/users/req.delete-user.dto';
 
 describe('UsersController', () => {
   let controller: UsersController;
   let service: UsersService;
-  const { defaultUser, notExistUser } = MockUser;
+  const { defaultUser } = MockUser;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -53,7 +54,7 @@ describe('UsersController', () => {
   describe('Delete users :id', () => {
     it('USE | service remove', async () => {
       service.remove = jest.fn().mockReturnValue(mockResRemoveUser);
-      await controller.remove(defaultUser.id);
+      await controller.remove(mockReqDeleteUser, defaultUser.id);
       expect(service.remove).toHaveBeenCalled();
     });
   });

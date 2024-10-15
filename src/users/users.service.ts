@@ -16,6 +16,7 @@ import { ResCreateUserDto } from './dtos/res.create-user.dto';
 import { ResLoginUserDto } from './dtos/res.login-user.dto';
 import { ResUpdateUserDto } from './dtos/res.update-user.dto';
 import { ResRemoveUserDto } from './dtos/res.remove-user.dto';
+import { ReqDeleteUserDto } from './dtos/req.delete-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -116,7 +117,18 @@ export class UsersService {
     return { message: '비밀번호가 수정되었습니다.' };
   }
 
-  async remove(loginUserId: number): Promise<ResRemoveUserDto> {
+  async remove(
+    reqDeleteUserDto: ReqDeleteUserDto,
+    loginUserId: number,
+  ): Promise<ResRemoveUserDto> {
+    const { id } = reqDeleteUserDto;
+
+    if (loginUserId === 0) {
+      await this.findOne(id);
+      await this.userRepo.delete(id);
+      return { message: '계정이 삭제되었습니다.' };
+    }
+
     await this.findOne(loginUserId);
     await this.userRepo.delete(loginUserId);
     return { message: '계정이 삭제되었습니다.' };

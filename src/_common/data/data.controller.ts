@@ -2,14 +2,11 @@ import {
   Controller,
   Post,
   UploadedFile,
-  UploadedFiles,
-  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { DataService } from './data.service';
-import { ApiBearerAuth, ApiBody, ApiConsumes } from '@nestjs/swagger';
-import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
-import { AuthGuard } from '../auth/auth.guard';
+import { ApiBody, ApiConsumes } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('data')
 export class DataController {

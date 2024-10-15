@@ -1,4 +1,5 @@
 import { House } from 'src/_core/entities/house.entity';
+import { ReqCreateHouseDto } from 'src/houses/dtos/req.create-house.dto';
 
 export class MockHouse {
   static defaultHouse: House = {
@@ -31,6 +32,12 @@ export class MockHouse {
 
   static houseList: House[] = [this.defaultHouse];
 
+  find({ where: { city } }) {
+    const houses = MockHouse.houseList.filter((house) => house.city === city);
+
+    return houses;
+  }
+
   findOne({ where: { id } }) {
     const [house] = MockHouse.houseList.filter((house) => house.id === id);
 
@@ -51,7 +58,13 @@ export class MockHouse {
     return MockHouse.defaultHouse;
   }
 
-  save() {
+  save(data: ReqCreateHouseDto) {
+    const keys = Object.keys(data);
+    for (let key of keys) {
+      if (!data[key].length) {
+        continue;
+      }
+    }
     MockHouse.houseList.push(MockHouse.defaultHouse);
 
     return MockHouse.defaultHouse;

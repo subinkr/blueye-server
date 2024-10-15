@@ -1,9 +1,22 @@
+import { NotFoundException } from '@nestjs/common';
 import { User } from 'src/_core/entities/user.entity';
 
 export class MockUser {
   static defaultUser: User = {
     id: 0,
     username: 'username',
+    password: '$2b$10$Owm1poGOOcpAZdRb24dG3.rUKoavmZdfHQI9frukIPJfgA40dekES',
+  };
+
+  static houseUser: User = {
+    id: 9,
+    username: 'houseUsername',
+    password: '$2b$10$Owm1poGOOcpAZdRb24dG3.rUKoavmZdfHQI9frukIPJfgA40dekES',
+  };
+
+  static otherUser: User = {
+    id: 10,
+    username: 'otherUsername',
     password: '$2b$10$Owm1poGOOcpAZdRb24dG3.rUKoavmZdfHQI9frukIPJfgA40dekES',
   };
 
@@ -52,7 +65,11 @@ export class MockUser {
 
   update() {}
 
-  delete() {
-    return true;
+  delete(id: number) {
+    const [user] = MockUser.userList.filter((user) => user.id === id);
+
+    if (user) return true;
+
+    return new NotFoundException('유저를 찾을 수 없습니다.');
   }
 }

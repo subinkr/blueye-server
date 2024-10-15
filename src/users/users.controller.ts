@@ -21,15 +21,16 @@ import { ResCreateUserDto } from './dtos/res.create-user.dto';
 import { ResLoginUserDto } from './dtos/res.login-user.dto';
 import { ResUpdateUserDto } from './dtos/res.update-user.dto';
 import { ResRemoveUserDto } from './dtos/res.remove-user.dto';
+import { ReqDeleteUserDto } from './dtos/req.delete-user.dto';
 
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Post('register')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
-  @Post('register')
   async create(
     @Body() reqCreateUserDto: ReqCreateUserDto,
     @AuthId() loginUserId: number,
@@ -44,9 +45,9 @@ export class UsersController {
     return this.usersService.login(reqLoginUserDto);
   }
 
+  @Put()
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
-  @Put()
   async update(
     @Body() reqUpdateUserDto: ReqUpdateUserDto,
     @AuthId() loginUserId: number,
@@ -54,10 +55,13 @@ export class UsersController {
     return this.usersService.update(loginUserId, reqUpdateUserDto);
   }
 
+  @Delete()
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
-  @Delete()
-  async remove(@AuthId() loginUserId: number): Promise<ResRemoveUserDto> {
-    return this.usersService.remove(loginUserId);
+  async remove(
+    @Body() reqDeleteUserDto: ReqDeleteUserDto,
+    @AuthId() loginUserId: number,
+  ): Promise<ResRemoveUserDto> {
+    return this.usersService.remove(reqDeleteUserDto, loginUserId);
   }
 }
