@@ -23,6 +23,7 @@ import { ResFindAllHouseDto } from './dtos/res.find-all-house.dto';
 import { House } from 'src/_core/entities/house.entity';
 import { ResUpdateHouseDto } from './dtos/res.update-house.dto';
 import { ResRemoveHouseDto } from './dtos/res.remove-house.dto';
+import { ResFindOneHouseDto } from './dtos/res.find-one-house.dto';
 
 @ApiTags('houses')
 @Controller('houses')
@@ -49,13 +50,20 @@ export class HousesController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<House> {
-    return this.housesService.findOne(+id);
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  async findOne(
+    @Param('id') id: string,
+    @AuthId() loginUserId: number,
+  ): Promise<ResFindOneHouseDto> {
+    return this.housesService.findOne(+id, loginUserId);
   }
 
   @Put(':id')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
+  @UseInterceptors(NoFilesInterceptor())
+  @ApiConsumes('multipart/form-data')
   async update(
     @Param('id') id: string,
     @Body() reqUpdateHouseDto: ReqUpdateHouseDto,

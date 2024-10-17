@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ReqCreateHouseDto } from './dtos/req.create-house.dto';
 import { ReqUpdateHouseDto } from './dtos/req.update-house.dto';
 import { Repository } from 'typeorm';
@@ -10,6 +14,7 @@ import { ResCreateHouseDto } from './dtos/res.create-house.dto';
 import { ResFindAllHouseDto } from './dtos/res.find-all-house.dto';
 import { ResUpdateHouseDto } from './dtos/res.update-house.dto';
 import { ResRemoveHouseDto } from './dtos/res.remove-house.dto';
+import { ResFindOneHouseDto } from './dtos/res.find-one-house.dto';
 
 @Injectable()
 export class HousesService {
@@ -55,12 +60,15 @@ export class HousesService {
     return resHouses;
   }
 
-  async findOne(id: number): Promise<House> {
+  async findOne(id: number, loginUserId: number): Promise<ResFindOneHouseDto> {
     const house = await this.houseRepo.findOne({
       where: { id },
     });
+    if (!house) {
+      throw new NotFoundException('부동산을 찾을 수 없습니다.');
+    }
 
-    return house;
+    return { house, loginUserId };
   }
 
   async update(
@@ -68,22 +76,19 @@ export class HousesService {
     reqUpdateHouseDto: ReqUpdateHouseDto,
     loginUserId: number,
   ): Promise<ResUpdateHouseDto> {
-    const house = await this.houseRepo.findOne({
-      where: { id },
-    });
+    const { house } = await this.findOne(id, loginUserId);
+
     if (house.writer !== loginUserId && loginUserId !== 0) {
       throw new UnauthorizedException('권한이 없습니다.');
     }
 
     await this.houseRepo.update(id, reqUpdateHouseDto);
 
-    return { message: '수정되었습니다.' };
+    return { id, message: '수정되었습니다.' };
   }
 
   async remove(id: number, loginUserId: number): Promise<ResRemoveHouseDto> {
-    const house = await this.houseRepo.findOne({
-      where: { id },
-    });
+    const { house } = await this.findOne(id, loginUserId);
     if (house.writer !== loginUserId && loginUserId !== 0) {
       throw new UnauthorizedException('권한이 없습니다.');
     }

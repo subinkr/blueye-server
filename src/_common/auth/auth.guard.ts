@@ -9,7 +9,7 @@ export class AuthGuard implements CanActivate {
     const cli = context.switchToWs().getClient();
     const accessToken =
       req.headers?.authorization ?? cli.handshake?.headers.authorization;
-    if (!accessToken) {
+    if (!accessToken || accessToken.split(' ')[1] === 'undefined') {
       return true;
     }
 

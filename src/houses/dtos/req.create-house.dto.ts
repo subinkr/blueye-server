@@ -47,5 +47,5 @@ export class ReqCreateHouseDto {
   tax: string; // @html marked()
 
   @ApiProperty({ example: mockReqCreateHouse.images })
-  images: string; // split('\n')
+  images: string; // split('|')
 }
