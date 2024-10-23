@@ -20,7 +20,6 @@ import { ReqFindAllHouseDto } from './dtos/req.find-all-house.dto';
 import { NoFilesInterceptor } from '@nestjs/platform-express';
 import { ResCreateHouseDto } from './dtos/res.create-house.dto';
 import { ResFindAllHouseDto } from './dtos/res.find-all-house.dto';
-import { House } from 'src/_core/entities/house.entity';
 import { ResUpdateHouseDto } from './dtos/res.update-house.dto';
 import { ResRemoveHouseDto } from './dtos/res.remove-house.dto';
 import { ResFindOneHouseDto } from './dtos/res.find-one-house.dto';

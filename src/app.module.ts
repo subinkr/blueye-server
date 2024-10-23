@@ -6,7 +6,6 @@ import { UsersModule } from './users/users.module';
 import { CommonModule } from './_common/_common.module';
 import { User } from './_core/entities/user.entity';
 import { APP_INTERCEPTOR } from '@nestjs/core';
-import { ServeStaticModule } from '@nestjs/serve-static';
 import { House } from './_core/entities/house.entity';
 import { ToursModule } from './tours/tours.module';
 import { Tour } from './_core/entities/tour.entity';

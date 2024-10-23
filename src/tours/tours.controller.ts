@@ -11,7 +11,7 @@ import {
   Put,
 } from '@nestjs/common';
 import { ToursService } from './tours.service';
-import { ApiBearerAuth, ApiConsumes } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/_common/auth/auth.guard';
 import { NoFilesInterceptor } from '@nestjs/platform-express';
 import { AuthId } from 'src/_common/auth/decorator/id.decorator';
@@ -24,6 +24,7 @@ import { ResFindOneTourDto } from './dto/res.find-one-tour.dto';
 import { ResUpdateTourDto } from './dto/res.update-tour.dto';
 import { ResRemoveTourDto } from './dto/res.remove-tour.dto';
 
+@ApiTags('tours')
 @Controller('tours')
 export class ToursController {
   constructor(private readonly toursService: ToursService) {}
