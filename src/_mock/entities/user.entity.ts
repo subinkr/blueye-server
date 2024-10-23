@@ -8,9 +8,9 @@ export class MockUser {
     password: '$2b$10$Owm1poGOOcpAZdRb24dG3.rUKoavmZdfHQI9frukIPJfgA40dekES',
   };
 
-  static houseUser: User = {
+  static uploadUser: User = {
     id: 9,
-    username: 'houseUsername',
+    username: 'uploadUsername',
     password: '$2b$10$Owm1poGOOcpAZdRb24dG3.rUKoavmZdfHQI9frukIPJfgA40dekES',
   };
 

@@ -1,11 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { House } from 'src/_core/entities/house.entity';
-import { mockResUpdateHouse } from 'src/_mock/dtos/houses/res.update-house.dto';
+import { mockResFindOneHouse } from 'src/_mock/dtos/houses/res.find-one-house.dto';
 
 export class ResFindOneHouseDto {
-  @ApiProperty({ example: mockResUpdateHouse.id })
+  @ApiProperty({ example: mockResFindOneHouse.house })
   house: House;
 
-  @ApiProperty({ example: mockResUpdateHouse.message })
+  @ApiProperty({ example: mockResFindOneHouse.loginUserId })
   loginUserId: number;
 }

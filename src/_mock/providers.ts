@@ -8,6 +8,9 @@ import { MockUser } from './entities/user.entity';
 import { DataService } from 'src/_common/data/data.service';
 import { House } from 'src/_core/entities/house.entity';
 import { MockHouse } from './entities/house.entity';
+import { ToursService } from 'src/tours/tours.service';
+import { Tour } from 'src/_core/entities/tour.entity';
+import { MockTour } from './entities/tour.entity';
 
 export const providers = [
   JwtService,
@@ -15,6 +18,7 @@ export const providers = [
   DataService,
   UsersService,
   HousesService,
+  ToursService,
   {
     provide: getRepositoryToken(User),
     useClass: MockUser,
@@ -22,5 +26,9 @@ export const providers = [
   {
     provide: getRepositoryToken(House),
     useClass: MockHouse,
+  },
+  {
+    provide: getRepositoryToken(Tour),
+    useClass: MockTour,
   },
 ];

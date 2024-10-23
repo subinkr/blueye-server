@@ -1,45 +1,45 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { HousesService } from './houses.service';
+import { ToursService } from './tours.service';
 import { providers } from 'src/_mock/providers';
-import { mockReqCreateHouse } from 'src/_mock/dtos/houses/req.create-house.dto';
 import { MockUser } from 'src/_mock/entities/user.entity';
-import { MockHouse } from 'src/_mock/entities/house.entity';
-import { mockResCreateHouse } from 'src/_mock/dtos/houses/res.create-house.dto';
+import { MockTour } from 'src/_mock/entities/tour.entity';
+import { mockReqCreateTour } from 'src/_mock/dtos/tours/req.create-tour.dto';
+import { mockResCreateTour } from 'src/_mock/dtos/tours/res.create-tour.dto';
 import {
   BadRequestException,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { mockReqFindAllHouse } from 'src/_mock/dtos/houses/req.find-all-house.dto';
-import { mockResFindAllHouse } from 'src/_mock/dtos/houses/res.find-all-house.dto';
-import { mockReqUpdateHouse } from 'src/_mock/dtos/houses/req.update-house.dto';
-import { mockResUpdateHouse } from 'src/_mock/dtos/houses/res.update-house.dto';
-import { mockResRemoveHouse } from 'src/_mock/dtos/houses/res.remove-house.dto';
-import { mockResFindOneHouse } from 'src/_mock/dtos/houses/res.find-one-house.dto';
+import { mockReqFindAllTour } from 'src/_mock/dtos/tours/req.find-all-tour.dto';
+import { mockResFindAllTour } from 'src/_mock/dtos/tours/res.find-all-tour.dto';
+import { mockResFindOneTour } from 'src/_mock/dtos/tours/res.find-one-tour.dto';
+import { mockReqUpdateTour } from 'src/_mock/dtos/tours/req.update-tour.dto';
+import { mockResUpdateTour } from 'src/_mock/dtos/tours/res.update-tour.dto';
+import { mockResRemoveTour } from 'src/_mock/dtos/tours/res.remove-tour.dto';
 
-describe('HousesService', () => {
-  let service: HousesService;
+describe('ToursService', () => {
+  let service: ToursService;
   const { defaultUser, uploadUser, otherUser } = MockUser;
-  const { defaultHouse, notExistHouse } = MockHouse;
+  const { defaultTour, notExistTour } = MockTour;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: providers,
     }).compile();
 
-    service = module.get<HousesService>(HousesService);
+    service = module.get<ToursService>(ToursService);
   });
 
   describe('Create', () => {
     it('RUN | create', async () => {
-      const result = await service.create(mockReqCreateHouse, uploadUser.id);
+      const result = await service.create(mockReqCreateTour, uploadUser.id);
       const keys = Object.keys(result);
-      const required = Object.keys(mockResCreateHouse);
+      const required = Object.keys(mockResCreateTour);
       expect(keys).toEqual(expect.arrayContaining(required));
     });
 
     it('ERR | not enough content', async () => {
-      const mockReqBadContent = { ...mockReqCreateHouse, title: null };
+      const mockReqBadContent = { ...mockReqCreateTour, title: null };
       const result = service.create(mockReqBadContent, uploadUser.id);
       await expect(result).rejects.toThrow(BadRequestException);
     });
@@ -47,23 +47,23 @@ describe('HousesService', () => {
 
   describe('Find all', () => {
     it('RUN | FindAll', async () => {
-      const result = await service.findAll(mockReqFindAllHouse);
+      const result = await service.findAll(mockReqFindAllTour);
       const keys = Object.keys(result[0]);
-      const required = Object.keys(mockResFindAllHouse);
+      const required = Object.keys(mockResFindAllTour);
       expect(keys).toEqual(expect.arrayContaining(required));
     });
   });
 
   describe('Find one', () => {
     it('RUN | FindOne', async () => {
-      const result = await service.findOne(defaultHouse.id, defaultUser.id);
+      const result = await service.findOne(defaultTour.id, defaultUser.id);
       const keys = Object.keys(result);
-      const required = Object.keys(mockResFindOneHouse);
+      const required = Object.keys(mockResFindOneTour);
       expect(keys).toEqual(expect.arrayContaining(required));
     });
 
-    it('ERR | not found house', async () => {
-      const result = service.findOne(notExistHouse.id, defaultUser.id);
+    it('ERR | not found tour', async () => {
+      const result = service.findOne(notExistTour.id, defaultUser.id);
       await expect(result).rejects.toThrow(NotFoundException);
     });
   });
@@ -71,19 +71,19 @@ describe('HousesService', () => {
   describe('Update', () => {
     it('RUN | Update', async () => {
       const result = await service.update(
-        defaultHouse.id,
-        mockReqUpdateHouse,
+        defaultTour.id,
+        mockReqUpdateTour,
         uploadUser.id,
       );
       const keys = Object.keys(result);
-      const required = Object.keys(mockResUpdateHouse);
+      const required = Object.keys(mockResUpdateTour);
       expect(keys).toEqual(expect.arrayContaining(required));
     });
 
     it('ERR | no permission', async () => {
       const result = service.update(
-        defaultHouse.id,
-        mockReqUpdateHouse,
+        defaultTour.id,
+        mockReqUpdateTour,
         otherUser.id,
       );
       await expect(result).rejects.toThrow(UnauthorizedException);
@@ -92,14 +92,14 @@ describe('HousesService', () => {
 
   describe('Remove', () => {
     it('RUN | Remove', async () => {
-      const result = await service.remove(defaultHouse.id, uploadUser.id);
+      const result = await service.remove(defaultTour.id, uploadUser.id);
       const keys = Object.keys(result);
-      const required = Object.keys(mockResRemoveHouse);
+      const required = Object.keys(mockResRemoveTour);
       expect(keys).toEqual(expect.arrayContaining(required));
     });
 
     it('ERR | no permission', async () => {
-      const result = service.remove(defaultHouse.id, otherUser.id);
+      const result = service.remove(defaultTour.id, otherUser.id);
       await expect(result).rejects.toThrow(UnauthorizedException);
     });
   });

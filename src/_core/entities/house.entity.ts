@@ -74,5 +74,5 @@ export class House {
 
   @ApiProperty({ example: MockHouse.defaultHouse.images })
   @Column()
-  images: string; // split('\n')
+  images: string; // split('|')
 }

@@ -46,7 +46,7 @@ describe('HousesController', () => {
   describe('Get house find one', () => {
     it('USE | service findOne', async () => {
       service.findOne = jest.fn().mockReturnValue(defaultHouse);
-      await controller.findOne(`${defaultHouse.id}`);
+      await controller.findOne(`${defaultHouse.id}`, defaultUser.id);
       expect(service.findOne).toHaveBeenCalled();
     });
   });
