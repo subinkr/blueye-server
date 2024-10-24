@@ -61,13 +61,7 @@ export class House {
   @ApiProperty({ example: MockHouse.defaultHouse.houseHolders })
   @Column()
   houseHolders: string; // @html marked()
-  @ApiProperty({ example: MockHouse.defaultHouse.own })
-  @Column()
-  own: string; // @html marked()
 
-  @ApiProperty({ example: MockHouse.defaultHouse.expectedReturn })
-  @Column()
-  expectedReturn: string; // @html marked()
   @ApiProperty({ example: MockHouse.defaultHouse.tax })
   @Column()
   tax: string; // @html marked()

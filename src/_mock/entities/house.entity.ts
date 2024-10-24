@@ -23,8 +23,6 @@ export class MockHouse {
       '1층~7층 주차장,\n\n8층 Facilities,\n\n9층 ~ 49층 4개 동 3,600세대.',
     date: `2차 일부: 2024년 12월,\n\n3차: 2029년.`,
     houseHolders: '3600세대',
-    own: 'FREE HOLD (영구 소유)',
-    expectedReturn: '평균 4 ~ 5%',
     tax: 'SPA(계약서)금액의 4%',
     images:
       '65ccf8d8-54b4-4abd-a0ce-689b13be986e.png\n900027c9-87eb-4087-b155-57f6a881b3bf.png',
@@ -51,8 +49,6 @@ export class MockHouse {
       '1층~7층 주차장,\n\n8층 Facilities,\n\n9층 ~ 49층 4개 동 3,600세대.',
     date: `2차 일부: 2024년 12월,\n\n3차: 2029년.`,
     houseHolders: '3600세대',
-    own: 'FREE HOLD (영구 소유)',
-    expectedReturn: '평균 4 ~ 5%',
     tax: 'SPA(계약서)금액의 4%',
     images:
       '65ccf8d8-54b4-4abd-a0ce-689b13be986e.png\n900027c9-87eb-4087-b155-57f6a881b3bf.png',
