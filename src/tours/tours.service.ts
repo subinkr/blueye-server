@@ -50,7 +50,7 @@ export class ToursService {
     const resTours = tours.map((tour) => {
       return {
         id: tour.id,
-        image: tour.images.split('|')[0],
+        image: tour.mainImage,
         title: tour.title,
         date: tour.date,
         price: tour.price,
