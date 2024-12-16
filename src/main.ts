@@ -26,9 +26,6 @@ async function bootstrap() {
     .setTitle('Blueye homepage')
     .setDescription('Blueye homepage')
     .setVersion('1.1.0')
-    .addTag('houses')
-    .addTag('tours')
-    .addTag('users')
     .addBearerAuth()
     .build();
 
