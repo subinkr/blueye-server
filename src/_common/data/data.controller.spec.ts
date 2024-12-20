@@ -1,25 +1,39 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { DataController } from './data.controller';
 import { DataService } from './data.service';
-import { providers } from 'src/_mock/providers';
-import { emptyFile } from 'src/_mock/emptyFile';
-import { mockResUploadImage } from 'src/_mock/dtos/data/res.upload-image.dto';
 
 describe('DataController', () => {
   let controller: DataController;
   let service: DataService;
 
+  const emptyFile = {
+    fieldname: '',
+    originalname: '',
+    encoding: '',
+    mimetype: '',
+    buffer: Buffer.from(''),
+    size: 0,
+  } as Express.Multer.File;
+
+  const mockResUploadImage = {
+    url: 'test-url',
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [DataController],
-      providers: providers,
+      providers: [{ provide: DataService, useValue: { uploadImage: jest.fn() } }],
     }).compile();
 
     controller = module.get<DataController>(DataController);
     service = module.get<DataService>(DataService);
   });
 
-  describe('Upload image', () => {
+  it('should be defined', () => {
+    expect(controller).toBeDefined();
+  });
+
+  describe('uploadImage', () => {
     it('USE | service uploadImage', async () => {
       service.uploadImage = jest.fn().mockReturnValue(mockResUploadImage);
       await controller.uploadImage(emptyFile);

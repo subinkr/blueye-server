@@ -1,39 +1,21 @@
 import { Injectable } from '@nestjs/common';
-import * as AWS from 'aws-sdk';
 import { v4 as UUID } from 'uuid';
+import { S3Service } from '../s3/s3.service';
 
 @Injectable()
 export class DataService {
+  constructor(private readonly s3Service: S3Service) {}
+
   async uploadImage(file: Express.Multer.File) {
-    AWS.config.update({
-      region: process.env.AWS_REGION,
-      credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-      },
-    });
+    const extension = file.originalname.split('.').pop();
+    const key = `images/${UUID()}.${extension}`;
 
-    file.originalname = `${UUID()}.${
-      file.originalname.split('.').slice(-1)[0]
-    }`;
+    const url = await this.s3Service.uploadFile(
+      key,
+      file.buffer,
+      file.mimetype,
+    );
 
-    const bucket = new AWS.S3();
-
-    const params = {
-      ACL: 'public-read',
-      Body: file.buffer,
-      Bucket: process.env.AWS_S3_BUCKET,
-      Key: file.originalname,
-    };
-
-    return this.runBucket(bucket, params, file);
-  }
-
-  async runBucket(bucket: any, params: any, file: Express.Multer.File) {
-    const callback = () => ({
-      image: `https://${process.env.AWS_S3_BUCKET}.s3.ap-northeast-2.amazonaws.com/${file.originalname}`,
-    });
-
-    return bucket.putObject(params).promise().then(callback);
+    return { url };
   }
 }

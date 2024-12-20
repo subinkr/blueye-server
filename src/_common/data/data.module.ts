@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
-import { DataService } from './data.service';
 import { DataController } from './data.controller';
-import { AuthService } from '../auth/auth.service';
-import { JwtService } from '@nestjs/jwt';
+import { DataService } from './data.service';
+import { S3Module } from '../s3/s3.module';
 
 @Module({
+  imports: [S3Module],
   controllers: [DataController],
-  providers: [DataService, AuthService, JwtService],
+  providers: [DataService],
 })
 export class DataModule {}

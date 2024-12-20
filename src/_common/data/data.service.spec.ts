@@ -1,52 +1,56 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { DataService } from './data.service';
-import { providers } from 'src/_mock/providers';
-import { emptyFile } from 'src/_mock/emptyFile';
+import { S3Service } from '../s3/s3.service';
 
 describe('DataService', () => {
   let service: DataService;
+  let s3Service: S3Service;
+
+  const emptyFile = {
+    fieldname: '',
+    originalname: 'test.jpg',
+    encoding: '',
+    mimetype: 'image/jpeg',
+    buffer: Buffer.from(''),
+    size: 0,
+  } as Express.Multer.File;
+
+  const mockS3Url = 'https://test-bucket.s3.amazonaws.com/images/test-uuid.jpg';
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: providers,
+      providers: [
+        DataService,
+        {
+          provide: S3Service,
+          useValue: {
+            uploadFile: jest.fn().mockResolvedValue(mockS3Url),
+          },
+        },
+      ],
     }).compile();
 
     service = module.get<DataService>(DataService);
+    s3Service = module.get<S3Service>(S3Service);
   });
 
-  describe('Run bucket', () => {
-    const then = (callback: Function) => {
-      return callback();
-    };
-    const promise = () => {
-      return { then };
-    };
-    const bucket = {
-      putObject() {
-        return { promise };
-      },
-    };
-    const params = {};
-
-    it('RUN | runBucket', async () => {
-      const result = await service.runBucket(bucket, params, emptyFile);
-      expect(typeof result.image).toBe('string');
-    });
+  it('should be defined', () => {
+    expect(service).toBeDefined();
   });
 
-  describe('Upload Image', () => {
-    const resUploadImageToS3 = { image: '' };
-    let result = {};
+  describe('uploadImage', () => {
+    let result: { url: string };
 
-    it('USE | runBucket', async () => {
-      service.runBucket = jest.fn().mockReturnValue(resUploadImageToS3);
+    beforeEach(async () => {
       result = await service.uploadImage(emptyFile);
     });
 
-    it('RUN | uploadImage', async () => {
-      const keys = Object.keys(result);
-      const required = Object.keys(resUploadImageToS3);
-      expect(keys).toEqual(expect.arrayContaining(required));
+    it('should call S3Service.uploadFile', () => {
+      expect(s3Service.uploadFile).toHaveBeenCalled();
+    });
+
+    it('should return url', () => {
+      expect(result).toEqual({ url: mockS3Url });
     });
   });
 });
