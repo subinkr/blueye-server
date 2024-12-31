@@ -11,6 +11,10 @@ export class Report {
   @Column()
   title: string;
 
+  @ApiProperty({ description: '국가' })
+  @Column()
+  country: string;
+
   @ApiProperty({ description: '파일 이름' })
   @Column()
   fileName: string;

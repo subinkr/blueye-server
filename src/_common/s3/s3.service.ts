@@ -19,16 +19,16 @@ export class S3Service {
     this.bucket = this.configService.get('AWS_S3_BUCKET');
   }
 
-  async uploadFile(key: string, buffer: Buffer, contentType: string) {
-    const command = new PutObjectCommand({
+  async uploadFile(key: string, buffer: Buffer, contentType: string): Promise<string> {
+    const params = {
       Bucket: this.bucket,
       Key: key,
       Body: buffer,
       ContentType: contentType,
-    });
+    };
 
-    await this.s3Client.send(command);
-    return `https://${this.bucket}.s3.amazonaws.com/${key}`;
+    await this.s3Client.send(new PutObjectCommand(params));
+    return `https://${this.bucket}.s3.ap-northeast-2.amazonaws.com/${key}`;
   }
 
   async deleteFile(key: string) {

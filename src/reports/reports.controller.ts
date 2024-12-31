@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Param, UseInterceptors, UploadedFile, Body, ParseIntPipe, Delete, HttpCode } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { Controller, Get, Post, Param, UseInterceptors, UploadedFiles, Body, ParseIntPipe, Delete, HttpCode, Query, BadRequestException } from '@nestjs/common';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { ReportsService } from './reports.service';
-import { ApiTags, ApiOperation, ApiConsumes, ApiBody, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiConsumes, ApiBody, ApiResponse, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { Report } from '../_core/entities/report.entity';
 import { NotFoundException } from '@nestjs/common';
 
@@ -14,23 +14,33 @@ export class ReportsController {
   @HttpCode(201)
   @ApiOperation({ 
     summary: '보고서 업로드', 
-    description: 'PDF 형식의 보고서를 업로드합니다. 파일과 제목이 필요합니다.' 
+    description: 'PDF 형식의 보고서와 썸네일 이미지를 업로드합니다.' 
   })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
       type: 'object',
-      required: ['file', 'title'],
+      required: ['file', 'title', 'country'],
       properties: {
         file: {
           type: 'string',
           format: 'binary',
           description: 'PDF 파일 (10MB 이하)',
         },
+        thumbnail: {
+          type: 'string',
+          format: 'binary',
+          description: '썸네일 이미지 (PNG/JPG/JPEG)',
+        },
         title: {
           type: 'string',
           description: '보고서 제목',
           example: '2023년 연간 보고서',
+        },
+        country: {
+          type: 'string',
+          description: '국가',
+          example: 'korea',
         },
       },
     },
@@ -44,12 +54,28 @@ export class ReportsController {
     status: 400,
     description: '잘못된 요청 (파일 누락, 잘못된 형식 등)',
   })
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileFieldsInterceptor([
+    { name: 'file', maxCount: 1 },
+    { name: 'thumbnail', maxCount: 1 }
+  ]))
   async uploadReport(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFiles() files: { 
+      file?: Express.Multer.File[], 
+      thumbnail?: Express.Multer.File[] 
+    },
     @Body('title') title: string,
+    @Body('country') country: string,
   ) {
-    return await this.reportsService.create(file, title);
+    if (!files.file?.[0]) {
+      throw new BadRequestException('PDF 파일이 필요합니다.');
+    }
+
+    return await this.reportsService.create(
+      files.file[0],
+      files.thumbnail?.[0],
+      title,
+      country
+    );
   }
 
   @Get()
@@ -57,13 +83,18 @@ export class ReportsController {
     summary: '보고서 목록 조회', 
     description: '업로드된 모든 보고서의 목록을 최신순으로 조회합니다.' 
   })
+  @ApiQuery({
+    name: 'country',
+    required: false,
+    description: '국가별 필터링 (예: korea, china, vietnam)',
+  })
   @ApiResponse({
     status: 200,
     description: '보고서 목록 조회 성공',
     type: [Report],
   })
-  findAll() {
-    return this.reportsService.findAll();
+  findAll(@Query('country') country?: string) {
+    return this.reportsService.findAll(country);
   }
 
   @Get(':id')

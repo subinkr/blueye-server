@@ -3,8 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Report } from '../_core/entities/report.entity';
 import { S3Service } from '../_common/s3/s3.service';
-import { PDFDocument } from 'pdf-lib';
 import * as path from 'path';
+import { fromBuffer } from 'pdf2pic';
+import * as sharp from 'sharp';
+import * as fs from 'fs';
+import * as os from 'os';
 
 @Injectable()
 export class ReportsService {
@@ -27,39 +30,111 @@ export class ReportsService {
     return `${timestamp}-${sanitizedName}${ext}`;
   }
 
-  async create(file: Express.Multer.File, title: string) {
+  async create(
+    file: Express.Multer.File,
+    thumbnail: Express.Multer.File | undefined,
+    title: string,
+    country: string
+  ) {
     const fileName = this.sanitizeFileName(file.originalname);
     const pdfKey = `reports/${fileName}`;
     const thumbnailKey = `thumbnails/${fileName}.png`;
 
     try {
-      const s3Url = await this.s3Service.uploadFile(
+      // Upload PDF to S3
+      const pdfUrl = await this.s3Service.uploadFile(
         pdfKey,
         file.buffer,
         'application/pdf'
       );
 
-      const pdfDoc = await PDFDocument.load(file.buffer);
-      const pages = pdfDoc.getPages();
-      if (pages.length > 0) {
-        // TODO: Implement thumbnail generation
+      let thumbnailUrl = '';
+
+      // Handle thumbnail
+      if (thumbnail) {
+        // If thumbnail is provided, optimize it
+        const optimizedThumbnail = await sharp(thumbnail.buffer)
+          .resize(800, 800, {
+            fit: 'contain',
+            background: { r: 255, g: 255, b: 255, alpha: 1 }
+          })
+          .png({ quality: 80 })
+          .toBuffer();
+
+        // Upload optimized thumbnail to S3
+        thumbnailUrl = await this.s3Service.uploadFile(
+          thumbnailKey,
+          optimizedThumbnail,
+          'image/png'
+        );
+      } else {
+        // Generate thumbnail from PDF if no thumbnail provided
+        const tempDir = os.tmpdir();
+        const tempImagePath = path.join(tempDir, `${fileName}.png`);
+
+        try {
+          // Generate thumbnail from PDF
+          const options = {
+            density: 100,
+            saveFilename: fileName,
+            savePath: tempDir,
+            format: "png",
+            width: 800,
+            height: 800
+          };
+          
+          const convert = fromBuffer(file.buffer, options);
+          await convert(1);
+          
+          // Optimize the generated thumbnail
+          const thumbnailBuffer = await sharp(tempImagePath)
+            .resize(800, 800, {
+              fit: 'contain',
+              background: { r: 255, g: 255, b: 255, alpha: 1 }
+            })
+            .png({ quality: 80 })
+            .toBuffer();
+
+          // Upload to S3
+          thumbnailUrl = await this.s3Service.uploadFile(
+            thumbnailKey,
+            thumbnailBuffer,
+            'image/png'
+          );
+
+          // Clean up temporary file
+          fs.unlinkSync(tempImagePath);
+        } catch (error) {
+          console.error('Error generating thumbnail from PDF:', error);
+          // Continue without thumbnail if generation fails
+        }
       }
 
       const report = this.reportsRepository.create({
         title,
         fileName,
-        filePath: pdfKey,
-        thumbnailPath: thumbnailKey,
+        filePath: pdfUrl,
+        thumbnailPath: thumbnailUrl,
+        country,
       });
 
       return this.reportsRepository.save(report);
     } catch (error) {
+      // Cleanup on error
+      try {
+        await this.s3Service.deleteFile(pdfKey);
+        await this.s3Service.deleteFile(thumbnailKey);
+      } catch (cleanupError) {
+        console.error('Error cleaning up files:', cleanupError);
+      }
       throw error;
     }
   }
 
-  findAll() {
+  findAll(country?: string) {
+    const where = country ? { country } : {};
     return this.reportsRepository.find({
+      where,
       order: { createdAt: 'DESC' },
     });
   }
