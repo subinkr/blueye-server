@@ -61,18 +61,6 @@ export class HousesController {
     summary: '매물 목록 조회',
     description: '조건에 맞는 매물 목록을 조회합니다.',
   })
-  @ApiQuery({
-    name: 'page',
-    required: false,
-    description: '페이지 번호',
-    type: Number,
-  })
-  @ApiQuery({
-    name: 'limit',
-    required: false,
-    description: '페이지당 항목 수',
-    type: Number,
-  })
   @ApiResponse({
     status: 200,
     description: '매물 목록 조회 성공',

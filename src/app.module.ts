@@ -11,6 +11,10 @@ import { ToursModule } from './tours/tours.module';
 import { Tour } from './_core/entities/tour.entity';
 import { ReportsModule } from './reports/reports.module';
 import { Report } from './_core/entities/report.entity';
+import { MagazinesModule } from './magazines/magazines.module';
+import { Magazine } from './_core/entities/magazine.entity';
+import { CustomersModule } from './customers/customers.module';
+import { Customer } from './_core/entities/customer.entity';
 
 @Module({
   imports: [
@@ -25,7 +29,7 @@ import { Report } from './_core/entities/report.entity';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [User, House, Tour, Report],
+      entities: [User, House, Tour, Report, Magazine, Customer],
       synchronize: true,
       ssl: process.env.DB_AWS_HOSTNAME && {
         rejectUnauthorized: false,
@@ -36,6 +40,8 @@ import { Report } from './_core/entities/report.entity';
     UsersModule,
     ToursModule,
     ReportsModule,
+    MagazinesModule,
+    CustomersModule,
   ],
   providers: [
     { provide: APP_INTERCEPTOR, useClass: ClassSerializerInterceptor },
