@@ -9,12 +9,13 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { House } from './_core/entities/house.entity';
 import { ToursModule } from './tours/tours.module';
 import { Tour } from './_core/entities/tour.entity';
-import { ReportsModule } from './reports/reports.module';
-import { Report } from './_core/entities/report.entity';
 import { MagazinesModule } from './magazines/magazines.module';
 import { Magazine } from './_core/entities/magazine.entity';
 import { CustomersModule } from './customers/customers.module';
 import { Customer } from './_core/entities/customer.entity';
+import { Track } from './_core/entities/track.entity';
+import { Log } from './_core/entities/log.entity';
+import { TracksModule } from './tracks/tracks.module';
 
 @Module({
   imports: [
@@ -29,7 +30,7 @@ import { Customer } from './_core/entities/customer.entity';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [User, House, Tour, Report, Magazine, Customer],
+      entities: [User, House, Tour, Magazine, Customer, Track, Log],
       synchronize: true,
       ssl: process.env.DB_AWS_HOSTNAME && {
         rejectUnauthorized: false,
@@ -39,9 +40,9 @@ import { Customer } from './_core/entities/customer.entity';
     HousesModule,
     UsersModule,
     ToursModule,
-    ReportsModule,
     MagazinesModule,
     CustomersModule,
+    TracksModule
   ],
   providers: [
     { provide: APP_INTERCEPTOR, useClass: ClassSerializerInterceptor },
