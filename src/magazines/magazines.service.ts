@@ -28,6 +28,8 @@ export class MagazinesService {
     title: string,
     type: string,
     redirectUrl: string,
+    description?: string,
+    published?: string,
   ) {
     const fileName = this.sanitizeFileName(thumbnail.originalname);
     const thumbnailKey = `magazine-thumbnails/${fileName}`;
@@ -46,6 +48,8 @@ export class MagazinesService {
         type,
         thumbnailUrl,
         redirectUrl,
+        description,
+        published,
       });
 
       return await this.magazinesRepository.save(magazine);
@@ -64,5 +68,42 @@ export class MagazinesService {
     query.orderBy('magazine.id', 'DESC');
     
     return await query.getMany();
+  }
+
+  async delete(id: number) {
+    const magazine = await this.magazinesRepository.findOne({ where: { id } });
+    
+    if (!magazine) {
+      throw new NotFoundException(`Magazine with ID ${id} not found`);
+    }
+
+    try {
+      // Extract the key from the thumbnailUrl
+      // Assuming the thumbnailUrl format is like https://bucket-name.s3.region.amazonaws.com/magazine-thumbnails/filename
+      if (magazine.thumbnailUrl) {
+        const urlParts = magazine.thumbnailUrl.split('/');
+        const keyIndex = urlParts.findIndex(part => part === 'magazine-thumbnails');
+        
+        if (keyIndex !== -1) {
+          const key = urlParts.slice(keyIndex).join('/');
+          // Delete the file from S3
+          await this.s3Service.deleteFile(key);
+        }
+      }
+
+      // Delete the magazine from the database
+      const result = await this.magazinesRepository.delete(id);
+      
+      if (result.affected === 0) {
+        throw new NotFoundException(`Magazine with ID ${id} not found`);
+      }
+      
+      return { success: true, message: `Magazine with ID ${id} has been deleted` };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new Error(`Failed to delete magazine: ${error.message}`);
+    }
   }
 }

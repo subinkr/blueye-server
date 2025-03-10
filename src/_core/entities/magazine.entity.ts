@@ -22,4 +22,12 @@ export class Magazine {
   @Column()
   @ApiProperty({ description: '이동할 URL' })
   redirectUrl: string;
+
+  @Column({ nullable: true })
+  @ApiProperty({ description: '잡지 내용 설명', required: false })
+  description: string;
+  
+  @Column({ nullable: true })
+  @ApiProperty({ description: '발행일 (YYYY-MM-DD 형식)', required: false })
+  published: string;
 }

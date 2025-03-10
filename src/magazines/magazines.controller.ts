@@ -1,4 +1,4 @@
-import { Controller, Get, Post, UseInterceptors, UploadedFile, Body, Query } from '@nestjs/common';
+import { Controller, Get, Post, Delete, UseInterceptors, UploadedFile, Body, Query, Param, ParseIntPipe } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MagazinesService } from './magazines.service';
 import { ApiTags, ApiOperation, ApiConsumes, ApiBody, ApiResponse, ApiQuery } from '@nestjs/swagger';
@@ -41,6 +41,16 @@ export class MagazinesController {
           description: '이동할 URL',
           example: 'https://example.com/magazine/2024-01',
         },
+        description: {
+          type: 'string',
+          description: '잡지 내용 설명',
+          example: '이번 호는 부동산 시장의 주요 동향과 전망을 다룹니다.',
+        },
+        published: {
+          type: 'string',
+          description: '발행일 (YYYY-MM-DD 형식)',
+          example: '2025-03-10',
+        },
       },
     },
   })
@@ -54,8 +64,10 @@ export class MagazinesController {
     @Body('title') title: string,
     @Body('type') type: string,
     @Body('redirectUrl') redirectUrl: string,
+    @Body('description') description?: string,
+    @Body('published') published?: string,
   ) {
-    return await this.magazinesService.create(thumbnail, title, type, redirectUrl);
+    return await this.magazinesService.create(thumbnail, title, type, redirectUrl, description, published);
   }
 
   @Get()
@@ -76,5 +88,52 @@ export class MagazinesController {
   })
   async findAll(@Query('type') type?: string) {
     return await this.magazinesService.findAll(type);
+  }
+
+  @Delete(':id')
+  @ApiOperation({ 
+    summary: '잡지 삭제', 
+    description: '특정 ID의 잡지를 삭제합니다.' 
+  })
+  @ApiResponse({
+    status: 200,
+    description: '잡지 삭제 성공',
+    schema: {
+      type: 'object',
+      properties: {
+        success: {
+          type: 'boolean',
+          example: true,
+        },
+        message: {
+          type: 'string',
+          example: 'Magazine with ID 1 has been deleted',
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 404,
+    description: '잡지를 찾을 수 없음',
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: {
+          type: 'number',
+          example: 404,
+        },
+        message: {
+          type: 'string',
+          example: 'Magazine with ID 999 not found',
+        },
+        error: {
+          type: 'string',
+          example: 'Not Found',
+        },
+      },
+    },
+  })
+  async delete(@Param('id', ParseIntPipe) id: number) {
+    return await this.magazinesService.delete(id);
   }
 }
