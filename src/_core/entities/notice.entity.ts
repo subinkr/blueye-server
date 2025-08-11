@@ -35,20 +35,6 @@ export class Notice {
   writer: number; // 작성자 ID
 
   @ApiProperty({ 
-    example: true,
-    description: '상단 고정 여부 (기본값: false)'
-  })
-  @Column({ default: true })
-  is_pinned: boolean; // 상단 고정 여부
-
-  @ApiProperty({ 
-    example: true,
-    description: '게시 활성화 여부 (기본값: true)'
-  })
-  @Column({ default: true })
-  is_active: boolean; // 활성화 여부
-
-  @ApiProperty({ 
     example: '2024-01-01T00:00:00.000Z',
     description: '생성일시 (자동 생성)'
   })

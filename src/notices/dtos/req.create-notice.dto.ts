@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsBoolean, IsOptional } from 'class-validator';
+import { IsString, IsNotEmpty } from 'class-validator';
 
 export class ReqCreateNoticeDto {
   @ApiProperty({ 
@@ -20,22 +20,4 @@ export class ReqCreateNoticeDto {
   @IsString()
   @IsNotEmpty()
   content: string;
-
-  @ApiProperty({ 
-    example: true, 
-    required: false,
-    description: '상단 고정 여부 (기본값: false)'
-  })
-  @IsBoolean()
-  @IsOptional()
-  is_pinned?: boolean = false;
-
-  @ApiProperty({ 
-    example: true, 
-    required: false,
-    description: '게시 활성화 여부 (기본값: true)'
-  })
-  @IsBoolean()
-  @IsOptional()
-  is_active?: boolean = true;
 }

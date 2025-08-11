@@ -41,17 +41,11 @@ export class NoticesService {
   async findAll(
     reqFindAllNoticeDto: ReqFindAllNoticeDto,
   ): Promise<ResFindAllNoticeDto[]> {
-    const { is_active, page = 1, limit = 10 } = reqFindAllNoticeDto;
+    const { page = 1, limit = 10 } = reqFindAllNoticeDto;
     
-    const queryBuilder = this.noticeRepo.createQueryBuilder('notice');
-    
-    if (is_active !== undefined) {
-      queryBuilder.where('notice.is_active = :is_active', { is_active });
-    }
-
-    const notices = await queryBuilder
-      .orderBy('notice.is_pinned', 'DESC')
-      .addOrderBy('notice.created_at', 'DESC')
+    const notices = await this.noticeRepo
+      .createQueryBuilder('notice')
+      .orderBy('notice.created_at', 'DESC')
       .skip((page - 1) * limit)
       .take(limit)
       .getMany();
@@ -61,8 +55,6 @@ export class NoticesService {
       title: notice.title,
       content: notice.content,
       writer: notice.writer,
-      is_pinned: notice.is_pinned,
-      is_active: notice.is_active,
       created_at: notice.created_at,
       updated_at: notice.updated_at,
     }));
@@ -82,8 +74,6 @@ export class NoticesService {
       title: notice.title,
       content: notice.content,
       writer: notice.writer,
-      is_pinned: notice.is_pinned,
-      is_active: notice.is_active,
       created_at: notice.created_at,
       updated_at: notice.updated_at,
     };

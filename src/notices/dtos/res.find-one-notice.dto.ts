@@ -26,18 +26,6 @@ export class ResFindOneNoticeDto {
   writer: number;
 
   @ApiProperty({ 
-    example: true,
-    description: '상단 고정 여부'
-  })
-  is_pinned: boolean;
-
-  @ApiProperty({ 
-    example: true,
-    description: '게시 활성화 여부'
-  })
-  is_active: boolean;
-
-  @ApiProperty({ 
     example: '2024-01-01T00:00:00.000Z',
     description: '생성일시'
   })
