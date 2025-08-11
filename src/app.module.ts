@@ -16,6 +16,8 @@ import { Customer } from './_core/entities/customer.entity';
 import { Track } from './_core/entities/track.entity';
 import { Log } from './_core/entities/log.entity';
 import { TracksModule } from './tracks/tracks.module';
+import { NoticesModule } from './notices/notices.module';
+import { Notice } from './_core/entities/notice.entity';
 
 @Module({
   imports: [
@@ -30,7 +32,7 @@ import { TracksModule } from './tracks/tracks.module';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [User, House, Tour, Magazine, Customer, Track, Log],
+      entities: [User, House, Tour, Magazine, Customer, Track, Log, Notice],
       synchronize: true,
       ssl: process.env.DB_AWS_HOSTNAME && {
         rejectUnauthorized: false,
@@ -42,7 +44,8 @@ import { TracksModule } from './tracks/tracks.module';
     ToursModule,
     MagazinesModule,
     CustomersModule,
-    TracksModule
+    TracksModule,
+    NoticesModule,
   ],
   providers: [
     { provide: APP_INTERCEPTOR, useClass: ClassSerializerInterceptor },
